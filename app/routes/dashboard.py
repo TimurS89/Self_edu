@@ -13,14 +13,15 @@ dashboard_bp = Blueprint("dashboard", __name__)
 def get_streak() -> int:
     """Calculate current study streak (consecutive days with a session)."""
     today = date.today()
-    dates = (
-        db.session.query(func.distinct(StudySession.session_date))
+    rows = (
+        db.session.query(StudySession.session_date)
+        .distinct()
         .order_by(StudySession.session_date.desc())
         .all()
     )
     streak = 0
     check_date = today
-    session_dates = {row[0] for row in dates}
+    session_dates = {row[0] for row in rows}
     while check_date in session_dates:
         streak += 1
         check_date -= timedelta(days=1)
