@@ -46,3 +46,9 @@ def login():
         return render_template_string(LOGIN_TEMPLATE, error="Invalid token")
 
     return render_template_string(LOGIN_TEMPLATE, error=None)
+
+
+@auth_bp.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("auth.login"))

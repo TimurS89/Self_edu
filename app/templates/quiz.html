@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Quiz — Self Edu{% endblock %}
+
+{% block content %}
+<div class="quiz-session" id="quiz-session">
+    <div class="review-header">
+        <a href="{{ url_for('lessons.view_lesson', track=track, topic_slug=topic_slug) }}">&larr;</a>
+        <span class="review-progress">
+            Question <span id="current-q">1</span> / {{ questions | length }}
+        </span>
+        <span class="review-track">{{ track | title }}</span>
+    </div>
+
+    <div class="card-container">
+        <div class="quiz-card">
+            <p class="quiz-question" id="quiz-question"></p>
+            <div class="quiz-choices" id="quiz-choices"></div>
+            <div class="quiz-feedback" id="quiz-feedback" style="display:none">
+                <p id="feedback-text"></p>
+                <p class="quiz-explanation" id="quiz-explanation"></p>
+                <button class="btn btn-primary btn-full" id="next-btn" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="quiz-results" style="display:none">
+    <div class="completion">
+        <div class="completion-icon" id="result-icon"></div>
+        <h2 id="result-title"></h2>
+        <p id="result-summary"></p>
+        <div class="completion-actions">
+            <a id="result-action" href="#" class="btn btn-primary"></a>
+            <a href="{{ url_for('lessons.track_index', track=track) }}" class="btn btn-secondary">Back to {{ track | title }}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const questions = {{ questions | tojson }};
+    const track = "{{ track }}";
+    const topicSlug = "{{ topic_slug }}";
+</script>
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+{% endblock %}

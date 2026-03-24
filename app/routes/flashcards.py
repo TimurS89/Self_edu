@@ -85,6 +85,27 @@ def rate_card(card_id: int):
     return jsonify({"ok": True, "next_due": card.due_date.isoformat()})
 
 
+@flashcards_bp.route("/review/<track>/complete", methods=["POST"])
+def complete_review(track: str):
+    """Record a completed review session."""
+    data = request.get_json()
+    cards_reviewed = data.get("cards_reviewed", 0)
+    duration_sec = data.get("duration_sec", 0)
+    duration_min = max(1, int(duration_sec / 60))
+
+    study = StudySession(
+        session_date=date.today(),
+        track=track,
+        duration_min=duration_min,
+        cards_reviewed=cards_reviewed,
+        activity_type="review",
+    )
+    db.session.add(study)
+    db.session.commit()
+
+    return jsonify({"ok": True})
+
+
 @flashcards_bp.route("/seed-all", methods=["POST"])
 def seed_all():
     """Seed all flashcards from all tracks/topics."""

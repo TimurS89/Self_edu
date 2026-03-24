@@ -2,6 +2,7 @@
 let currentIndex = 0;
 let isFlipped = false;
 let startTime = null;
+let sessionStartTime = Date.now();
 let results = { again: 0, hard: 0, good: 0, easy: 0 };
 
 const ratingNames = { 1: "again", 2: "hard", 3: "good", 4: "easy" };
@@ -64,8 +65,20 @@ function showComplete() {
     document.getElementById("review-complete").style.display = "block";
 
     const total = cards.length;
-    const summary = `Reviewed ${total} cards: ${results.easy} easy, ${results.good} good, ${results.hard} hard, ${results.again} again`;
+    const durationSec = Math.round((Date.now() - sessionStartTime) / 1000);
+    const durationMin = Math.max(1, Math.round(durationSec / 60));
+    const summary = `Reviewed ${total} cards in ${durationMin} min: ${results.easy} easy, ${results.good} good, ${results.hard} hard, ${results.again} again`;
     document.getElementById("review-summary").textContent = summary;
+
+    // Record session on server
+    fetch(`/flashcards/review/${track}/complete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            cards_reviewed: total,
+            duration_sec: durationSec,
+        }),
+    });
 }
 
 // Initialize on load
