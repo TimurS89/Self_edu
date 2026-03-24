@@ -1,6 +1,6 @@
 import hmac
 
-from flask import Blueprint, current_app, redirect, render_template_string, request, session, url_for
+from flask import Blueprint, Response, current_app, redirect, render_template_string, request, session, url_for
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -36,7 +36,7 @@ LOGIN_TEMPLATE = """
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
-def login():
+def login() -> str | Response:
     if not current_app.config.get("APP_TOKEN"):
         session["authenticated"] = True
         return redirect(url_for("dashboard.index"))
@@ -51,6 +51,6 @@ def login():
 
 
 @auth_bp.route("/logout")
-def logout():
+def logout() -> Response:
     session.clear()
     return redirect(url_for("auth.login"))

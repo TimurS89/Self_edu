@@ -1,6 +1,6 @@
-from datetime import date, datetime
+from datetime import date
 
-from flask import Blueprint, abort, jsonify, render_template, request
+from flask import Blueprint, Response, abort, jsonify, render_template, request
 
 from app import db
 from app.models import Card, CardReview, StudySession
@@ -10,7 +10,7 @@ flashcards_bp = Blueprint("flashcards", __name__, url_prefix="/flashcards")
 
 
 @flashcards_bp.route("/seed/<track>/<topic_slug>", methods=["POST"])
-def seed_cards(track: str, topic_slug: str):
+def seed_cards(track: str, topic_slug: str) -> Response:
     """Import flashcards from YAML into the database (idempotent)."""
     cards_data = load_flashcards(track, topic_slug)
     added = 0
@@ -33,7 +33,7 @@ def seed_cards(track: str, topic_slug: str):
 
 
 @flashcards_bp.route("/review/<track>")
-def review(track: str):
+def review(track: str) -> str:
     """Show the flashcard review session for a track."""
     today = date.today()
 
@@ -59,7 +59,7 @@ def review(track: str):
 
 
 @flashcards_bp.route("/review/<int:card_id>/rate", methods=["POST"])
-def rate_card(card_id: int):
+def rate_card(card_id: int) -> Response:
     """Rate a card after review. Updates SRS scheduling."""
     from app.services.srs import schedule_review
 
@@ -88,7 +88,7 @@ def rate_card(card_id: int):
 
 
 @flashcards_bp.route("/review/<track>/complete", methods=["POST"])
-def complete_review(track: str):
+def complete_review(track: str) -> Response:
     """Record a completed review session."""
     data = request.get_json()
     cards_reviewed = data.get("cards_reviewed", 0)
@@ -109,7 +109,7 @@ def complete_review(track: str):
 
 
 @flashcards_bp.route("/seed-all", methods=["POST"])
-def seed_all():
+def seed_all() -> Response:
     """Seed all flashcards from all tracks/topics."""
     total_added = 0
     for track in list_tracks():

@@ -1,6 +1,6 @@
 from datetime import date, datetime, timezone
 
-from flask import Blueprint, abort, jsonify, redirect, render_template, request, session, url_for
+from flask import Blueprint, Response, abort, jsonify, redirect, render_template, request, session, url_for
 
 from app import db
 from app.models import LessonProgress, StudySession
@@ -10,7 +10,7 @@ lessons_bp = Blueprint("lessons", __name__, url_prefix="/lessons")
 
 
 @lessons_bp.route("/<track>")
-def track_index(track: str):
+def track_index(track: str) -> str:
     topics = list_topics(track)
     if not topics:
         abort(404)
@@ -25,7 +25,7 @@ def track_index(track: str):
 
 
 @lessons_bp.route("/<track>/<topic_slug>")
-def view_lesson(track: str, topic_slug: str):
+def view_lesson(track: str, topic_slug: str) -> str:
     html_content = load_lesson(track, topic_slug)
     if html_content is None:
         abort(404)
@@ -56,7 +56,7 @@ def view_lesson(track: str, topic_slug: str):
 
 
 @lessons_bp.route("/<track>/<topic_slug>/quiz")
-def take_quiz(track: str, topic_slug: str):
+def take_quiz(track: str, topic_slug: str) -> str:
     """Show quiz for a topic."""
     questions = load_quiz(track, topic_slug)
     if not questions:
@@ -68,7 +68,7 @@ def take_quiz(track: str, topic_slug: str):
 
 
 @lessons_bp.route("/<track>/<topic_slug>/quiz/submit", methods=["POST"])
-def submit_quiz(track: str, topic_slug: str):
+def submit_quiz(track: str, topic_slug: str) -> Response:
     """Grade quiz and return results."""
     questions = load_quiz(track, topic_slug)
     if not questions:
@@ -107,13 +107,13 @@ def submit_quiz(track: str, topic_slug: str):
 
 
 @lessons_bp.route("/<track>/<topic_slug>/complete", methods=["POST"])
-def complete_lesson(track: str, topic_slug: str):
+def complete_lesson(track: str, topic_slug: str) -> Response:
     _complete_lesson(track, topic_slug)
     return redirect(url_for("lessons.lesson_complete_page", track=track, topic_slug=topic_slug))
 
 
 @lessons_bp.route("/<track>/<topic_slug>/completed")
-def lesson_complete_page(track: str, topic_slug: str):
+def lesson_complete_page(track: str, topic_slug: str) -> str:
     """Show lesson completion page (GET to prevent duplicate submissions on refresh)."""
     topics = list_topics(track)
     current_idx = next(

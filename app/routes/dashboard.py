@@ -62,7 +62,7 @@ def get_track_progress(track: str) -> dict:
 
 
 @dashboard_bp.route("/")
-def index():
+def index() -> str:
     tracks = list_tracks()
     streak = get_streak()
     due_cards = get_due_cards_count()
