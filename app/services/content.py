@@ -12,6 +12,14 @@ def get_content_dir() -> Path:
     return current_app.config["CONTENT_DIR"]
 
 
+def _safe_path(base: Path, *parts: str) -> Path:
+    """Resolve a path and ensure it stays within the base directory."""
+    resolved = (base / Path(*parts)).resolve()
+    if not resolved.is_relative_to(base.resolve()):
+        raise ValueError("Path traversal detected")
+    return resolved
+
+
 def list_tracks() -> list[str]:
     """Return available track names (directory names under content/)."""
     content_dir = get_content_dir()
@@ -20,7 +28,7 @@ def list_tracks() -> list[str]:
 
 def list_topics(track: str) -> list[dict[str, str]]:
     """Return topics for a track, sorted by directory name prefix."""
-    track_dir = get_content_dir() / track
+    track_dir = _safe_path(get_content_dir(), track)
     if not track_dir.exists():
         return []
     topics = []
@@ -36,7 +44,7 @@ def list_topics(track: str) -> list[dict[str, str]]:
 
 def load_lesson(track: str, topic_slug: str) -> str | None:
     """Load a lesson markdown file and return rendered HTML."""
-    lesson_path = get_content_dir() / track / topic_slug / "lesson.md"
+    lesson_path = _safe_path(get_content_dir(), track, topic_slug, "lesson.md")
     if not lesson_path.exists():
         return None
     md_text = lesson_path.read_text(encoding="utf-8")
@@ -45,7 +53,7 @@ def load_lesson(track: str, topic_slug: str) -> str | None:
 
 def load_flashcards(track: str, topic_slug: str) -> list[dict[str, Any]]:
     """Load flashcard definitions from YAML."""
-    cards_path = get_content_dir() / track / topic_slug / "flashcards.yaml"
+    cards_path = _safe_path(get_content_dir(), track, topic_slug, "flashcards.yaml")
     if not cards_path.exists():
         return []
     data = yaml.safe_load(cards_path.read_text(encoding="utf-8"))
@@ -54,7 +62,7 @@ def load_flashcards(track: str, topic_slug: str) -> list[dict[str, Any]]:
 
 def load_quiz(track: str, topic_slug: str) -> list[dict[str, Any]]:
     """Load quiz questions from YAML."""
-    quiz_path = get_content_dir() / track / topic_slug / "quiz.yaml"
+    quiz_path = _safe_path(get_content_dir(), track, topic_slug, "quiz.yaml")
     if not quiz_path.exists():
         return []
     data = yaml.safe_load(quiz_path.read_text(encoding="utf-8"))

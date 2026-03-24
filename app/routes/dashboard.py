@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 
 from flask import Blueprint, render_template
+from sqlalchemy import func
 
 from app import db
 from app.models import Card, StudySession, LessonProgress
@@ -12,30 +13,33 @@ dashboard_bp = Blueprint("dashboard", __name__)
 def get_streak() -> int:
     """Calculate current study streak (consecutive days with a session)."""
     today = date.today()
+    dates = (
+        db.session.query(func.distinct(StudySession.session_date))
+        .order_by(StudySession.session_date.desc())
+        .all()
+    )
     streak = 0
     check_date = today
-    while True:
-        has_session = db.session.query(StudySession).filter(
-            StudySession.session_date == check_date
-        ).first()
-        if has_session:
-            streak += 1
-            check_date -= timedelta(days=1)
-        else:
-            break
+    session_dates = {row[0] for row in dates}
+    while check_date in session_dates:
+        streak += 1
+        check_date -= timedelta(days=1)
     return streak
 
 
 def get_due_cards_count() -> dict[str, int]:
     """Count cards due today per track."""
     today = date.today()
-    counts: dict[str, int] = {}
+    rows = (
+        db.session.query(Card.track, func.count(Card.id))
+        .filter(Card.due_date <= today)
+        .group_by(Card.track)
+        .all()
+    )
+    counts = {track: count for track, count in rows}
+    # Include tracks with zero due cards
     for track_name in list_tracks():
-        count = db.session.query(Card).filter(
-            Card.track == track_name,
-            Card.due_date <= today,
-        ).count()
-        counts[track_name] = count
+        counts.setdefault(track_name, 0)
     return counts
 
 
@@ -47,7 +51,7 @@ def get_track_progress(track: str) -> dict:
     total = len(topics)
     completed = db.session.query(LessonProgress).filter(
         LessonProgress.track == track,
-        LessonProgress.completed == True,
+        LessonProgress.completed.is_(True),
     ).count()
     return {
         "total": total,
@@ -85,20 +89,19 @@ def _get_recommendation(
     priority_weights = {"claude": 1.5, "python": 1.2, "japanese": 1.0}
     scores: dict[str, float] = {}
 
+    # Fetch last session date per track in a single query
+    last_sessions = dict(
+        db.session.query(StudySession.track, func.max(StudySession.session_date))
+        .group_by(StudySession.track)
+        .all()
+    )
+
     for track in tracks:
         due = due_cards.get(track, 0)
         weight = priority_weights.get(track, 1.0)
 
-        # Last session for this track
-        last_session = (
-            db.session.query(StudySession)
-            .filter(StudySession.track == track)
-            .order_by(StudySession.session_date.desc())
-            .first()
-        )
-        days_since = (
-            (date.today() - last_session.session_date).days if last_session else 7
-        )
+        last_date = last_sessions.get(track)
+        days_since = (date.today() - last_date).days if last_date else 7
 
         score = (due * 3.0) + (weight * 2.0) + (days_since * 0.5)
         scores[track] = score

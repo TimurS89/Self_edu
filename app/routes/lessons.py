@@ -1,6 +1,6 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 
-from flask import Blueprint, abort, jsonify, render_template, request, session
+from flask import Blueprint, abort, jsonify, redirect, render_template, request, session, url_for
 
 from app import db
 from app.models import LessonProgress, StudySession
@@ -15,12 +15,11 @@ def track_index(track: str):
     if not topics:
         abort(404)
 
-    # Get completion status for each topic
+    # Get completion status in a single query
+    progress_records = db.session.query(LessonProgress).filter_by(track=track).all()
+    completed_map = {p.topic: p.completed for p in progress_records}
     for topic in topics:
-        prog = db.session.query(LessonProgress).filter_by(
-            track=track, topic=topic["slug"]
-        ).first()
-        topic["completed"] = prog.completed if prog else False
+        topic["completed"] = completed_map.get(topic["slug"], False)
 
     return render_template("track_index.html", track=track, topics=topics)
 
@@ -41,7 +40,7 @@ def view_lesson(track: str, topic_slug: str):
         db.session.commit()
 
     # Track lesson start time
-    session["lesson_start"] = datetime.utcnow().isoformat()
+    session["lesson_start"] = datetime.now(timezone.utc).isoformat()
 
     # Check if quiz exists for this topic
     quiz_questions = load_quiz(track, topic_slug)
@@ -110,8 +109,12 @@ def submit_quiz(track: str, topic_slug: str):
 @lessons_bp.route("/<track>/<topic_slug>/complete", methods=["POST"])
 def complete_lesson(track: str, topic_slug: str):
     _complete_lesson(track, topic_slug)
+    return redirect(url_for("lessons.lesson_complete_page", track=track, topic_slug=topic_slug))
 
-    # Find next topic
+
+@lessons_bp.route("/<track>/<topic_slug>/completed")
+def lesson_complete_page(track: str, topic_slug: str):
+    """Show lesson completion page (GET to prevent duplicate submissions on refresh)."""
     topics = list_topics(track)
     current_idx = next(
         (i for i, t in enumerate(topics) if t["slug"] == topic_slug), -1
@@ -132,14 +135,14 @@ def _complete_lesson(track: str, topic_slug: str) -> None:
         prog = LessonProgress(track=track, topic=topic_slug)
         db.session.add(prog)
     prog.completed = True
-    prog.completed_at = datetime.utcnow()
+    prog.completed_at = datetime.now(timezone.utc)
 
     # Calculate time spent
     start_iso = session.pop("lesson_start", None)
     duration_min = 0
     if start_iso:
         start_time = datetime.fromisoformat(start_iso)
-        elapsed = (datetime.utcnow() - start_time).total_seconds()
+        elapsed = (datetime.now(timezone.utc) - start_time).total_seconds()
         prog.time_spent_sec = int(elapsed)
         duration_min = max(1, int(elapsed / 60))
 

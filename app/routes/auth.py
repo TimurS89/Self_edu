@@ -1,3 +1,5 @@
+import hmac
+
 from flask import Blueprint, current_app, redirect, render_template_string, request, session, url_for
 
 auth_bp = Blueprint("auth", __name__)
@@ -40,7 +42,7 @@ def login():
         return redirect(url_for("dashboard.index"))
 
     if request.method == "POST":
-        if request.form.get("token") == current_app.config["APP_TOKEN"]:
+        if hmac.compare_digest(request.form.get("token", ""), current_app.config["APP_TOKEN"]):
             session["authenticated"] = True
             return redirect(url_for("dashboard.index"))
         return render_template_string(LOGIN_TEMPLATE, error="Invalid token")

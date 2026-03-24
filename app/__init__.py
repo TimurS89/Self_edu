@@ -1,5 +1,3 @@
-from functools import wraps
-
 from flask import Flask, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 
@@ -22,8 +20,7 @@ def create_app() -> Flask:
             return
         if session.get("authenticated"):
             return
-        if request.endpoint and request.endpoint != "auth.login":
-            return redirect(url_for("auth.login"))
+        return redirect(url_for("auth.login"))
 
     from app.routes.auth import auth_bp
     from app.routes.dashboard import dashboard_bp

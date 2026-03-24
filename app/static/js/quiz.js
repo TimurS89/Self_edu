@@ -79,7 +79,11 @@ function submitQuiz() {
         body: JSON.stringify({ answers: answers }),
     })
         .then(function (r) { return r.json(); })
-        .then(function (data) { showResults(data); });
+        .then(function (data) { showResults(data); })
+        .catch(function (err) {
+            console.error("Failed to submit quiz:", err);
+            alert("Failed to submit quiz. Please check your connection and try again.");
+        });
 }
 
 function showResults(data) {

@@ -16,7 +16,7 @@ Research backing:
 - Rating system: 1=Again, 2=Hard, 3=Good, 4=Easy
 """
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from math import exp, log
 
 # Card states
@@ -59,8 +59,7 @@ def schedule_review(card, rating: int) -> None:
         _schedule_relearning(card, rating)
 
     card.reps += 1
-    from datetime import datetime
-    card.last_review = datetime.utcnow()
+    card.last_review = datetime.now(timezone.utc)
 
 
 def _schedule_new(card, rating: int) -> None:

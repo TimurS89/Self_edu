@@ -69,6 +69,8 @@ def rate_card(card_id: int):
 
     data = request.get_json()
     rating = int(data.get("rating", 3))  # 1=again, 2=hard, 3=good, 4=easy
+    if rating not in (1, 2, 3, 4):
+        abort(400, description="Rating must be 1-4")
 
     # Record the review
     review = CardReview(
@@ -113,11 +115,16 @@ def seed_all():
     for track in list_tracks():
         for topic in list_topics(track):
             cards_data = load_flashcards(track, topic["slug"])
+            if not cards_data:
+                continue
+            # Batch-load existing fronts for this topic
+            existing_fronts = {
+                row[0] for row in db.session.query(Card.front).filter_by(
+                    track=track, topic=topic["slug"]
+                ).all()
+            }
             for card_data in cards_data:
-                existing = db.session.query(Card).filter_by(
-                    track=track, topic=topic["slug"], front=card_data["front"]
-                ).first()
-                if not existing:
+                if card_data["front"] not in existing_fronts:
                     card = Card(
                         track=track,
                         topic=topic["slug"],

@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 
 from app import db
 
@@ -18,7 +18,7 @@ class Card(db.Model):
     # FSRS/SRS scheduling fields
     stability = db.Column(db.Float, default=0.0)
     difficulty = db.Column(db.Float, default=0.3)
-    due_date = db.Column(db.Date, default=date.today)
+    due_date = db.Column(db.Date, default=date.today, index=True)
     last_review = db.Column(db.DateTime, nullable=True)
     reps = db.Column(db.Integer, default=0)
     state = db.Column(db.Integer, default=0)  # 0=new, 1=learning, 2=review, 3=relearning
@@ -33,7 +33,7 @@ class CardReview(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     card_id = db.Column(db.Integer, db.ForeignKey("cards.id"), nullable=False)
-    reviewed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    reviewed_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     rating = db.Column(db.Integer, nullable=False)  # 1=again, 2=hard, 3=good, 4=easy
     response_time_ms = db.Column(db.Integer, nullable=True)
 
@@ -59,9 +59,9 @@ class StudySession(db.Model):
     __tablename__ = "study_sessions"
 
     id = db.Column(db.Integer, primary_key=True)
-    session_date = db.Column(db.Date, default=date.today)
+    session_date = db.Column(db.Date, default=date.today, index=True)
     track = db.Column(db.String(20), nullable=False)
     duration_min = db.Column(db.Integer, default=0)
     cards_reviewed = db.Column(db.Integer, default=0)
     activity_type = db.Column(db.String(20), default="review")  # review, lesson, quiz
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))

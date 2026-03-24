@@ -50,6 +50,10 @@ function rateCard(rating) {
             rating: rating,
             response_time_ms: responseTime,
         }),
+    }).catch(function (err) {
+        console.error("Failed to save rating:", err);
+        var warn = document.getElementById("sync-warning");
+        if (warn) warn.style.display = "block";
     });
 
     currentIndex++;
@@ -78,6 +82,8 @@ function showComplete() {
             cards_reviewed: total,
             duration_sec: durationSec,
         }),
+    }).catch(function (err) {
+        console.error("Failed to save session:", err);
     });
 }
 
