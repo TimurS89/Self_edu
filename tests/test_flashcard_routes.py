@@ -153,6 +153,34 @@ class TestRateCard:
                 assert resp.status_code == 200
 
 
+    def test_rate_card_missing_json_body(self, app, client):
+        with app.app_context():
+            card = _seed_card()
+            resp = client.post(
+                f"/flashcards/review/{card.id}/rate",
+                content_type="application/json",
+            )
+            assert resp.status_code == 400
+
+    def test_rate_card_missing_rating_key(self, app, client):
+        with app.app_context():
+            card = _seed_card()
+            resp = client.post(
+                f"/flashcards/review/{card.id}/rate",
+                data=json.dumps({"response_time_ms": 1000}),
+                content_type="application/json",
+            )
+            assert resp.status_code == 400
+
+    def test_complete_review_missing_json_body(self, app, client):
+        with app.app_context():
+            resp = client.post(
+                "/flashcards/review/python/complete",
+                content_type="application/json",
+            )
+            assert resp.status_code == 200
+
+
 class TestSeedCards:
     def test_seed_track_topic(self, app, client):
         with app.app_context():

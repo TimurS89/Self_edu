@@ -16,8 +16,14 @@ Research backing:
 - Rating system: 1=Again, 2=Hard, 3=Good, 4=Easy
 """
 
+from __future__ import annotations
+
 from datetime import date, datetime, timedelta, timezone
 from math import exp, log
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models import Card
 
 # Card states
 NEW = 0
@@ -42,7 +48,7 @@ DIFFICULTY_DECAY = 0.1
 DIFFICULTY_DEFAULT = 0.3
 
 
-def schedule_review(card, rating: int) -> None:
+def schedule_review(card: Card, rating: int) -> None:
     """Update a card's scheduling after a review.
 
     Args:
@@ -62,7 +68,7 @@ def schedule_review(card, rating: int) -> None:
     card.last_review = datetime.now(timezone.utc)
 
 
-def _schedule_new(card, rating: int) -> None:
+def _schedule_new(card: Card, rating: int) -> None:
     """Schedule a card being seen for the first time."""
     card.stability = INITIAL_STABILITY[rating]
     card.difficulty = _initial_difficulty(rating)
@@ -75,7 +81,7 @@ def _schedule_new(card, rating: int) -> None:
     card.due_date = _next_due(card.stability)
 
 
-def _schedule_learning(card, rating: int) -> None:
+def _schedule_learning(card: Card, rating: int) -> None:
     """Schedule a card that's still in the learning phase."""
     if rating == 1:
         # Failed again — reset stability
@@ -93,7 +99,7 @@ def _schedule_learning(card, rating: int) -> None:
     card.due_date = _next_due(card.stability)
 
 
-def _schedule_review(card, rating: int) -> None:
+def _schedule_review(card: Card, rating: int) -> None:
     """Schedule a card that's in the review phase."""
     if rating == 1:
         # Lapsed — enter relearning
@@ -110,7 +116,7 @@ def _schedule_review(card, rating: int) -> None:
     card.due_date = _next_due(card.stability)
 
 
-def _schedule_relearning(card, rating: int) -> None:
+def _schedule_relearning(card: Card, rating: int) -> None:
     """Schedule a card that lapsed and is being relearned."""
     if rating == 1:
         card.stability = INITIAL_STABILITY[1]

@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for, session
+from flask import Flask, Response, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -12,14 +12,14 @@ def create_app() -> Flask:
 
     # Simple token-based auth
     @app.before_request
-    def check_auth() -> None:
+    def check_auth() -> Response | None:
         token = app.config.get("APP_TOKEN")
         if not token:
-            return  # No auth configured
-        if request.endpoint == "auth.login" or request.path.startswith("/static"):
-            return
+            return None  # No auth configured
+        if request.endpoint == "auth.login" or request.path.startswith("/static/"):
+            return None
         if session.get("authenticated"):
-            return
+            return None
         return redirect(url_for("auth.login"))
 
     from app.routes.auth import auth_bp

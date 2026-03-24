@@ -39,7 +39,7 @@
 {% block scripts %}
 <script>
     const cards = {{ cards | tojson }};
-    const track = "{{ track }}";
+    const track = {{ track | tojson }};
 </script>
 <script src="{{ url_for('static', filename='js/flashcard.js') }}"></script>
 {% endblock %}

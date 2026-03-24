@@ -74,7 +74,7 @@ def submit_quiz(track: str, topic_slug: str) -> Response:
     if not questions:
         abort(404)
 
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     answers = data.get("answers", [])
 
     correct = 0

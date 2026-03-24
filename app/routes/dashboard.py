@@ -85,7 +85,7 @@ def index() -> str:
 
 def _get_recommendation(
     tracks: list[str], due_cards: dict[str, int], progress: dict
-) -> dict:
+) -> dict[str, str | None]:
     """Smart scheduler — score each track and recommend what to study."""
     priority_weights = {"claude": 1.5, "python": 1.2, "japanese": 1.0}
     scores: dict[str, float] = {}

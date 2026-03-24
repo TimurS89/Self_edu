@@ -40,8 +40,8 @@
 {% block scripts %}
 <script>
     const questions = {{ questions | tojson }};
-    const track = "{{ track }}";
-    const topicSlug = "{{ topic_slug }}";
+    const track = {{ track | tojson }};
+    const topicSlug = {{ topic_slug | tojson }};
 </script>
 <script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
 {% endblock %}

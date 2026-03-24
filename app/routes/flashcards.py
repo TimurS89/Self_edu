@@ -13,12 +13,14 @@ flashcards_bp = Blueprint("flashcards", __name__, url_prefix="/flashcards")
 def seed_cards(track: str, topic_slug: str) -> Response:
     """Import flashcards from YAML into the database (idempotent)."""
     cards_data = load_flashcards(track, topic_slug)
+    existing_fronts = {
+        row[0] for row in db.session.query(Card.front).filter_by(
+            track=track, topic=topic_slug
+        ).all()
+    }
     added = 0
     for card_data in cards_data:
-        existing = db.session.query(Card).filter_by(
-            track=track, topic=topic_slug, front=card_data["front"]
-        ).first()
-        if not existing:
+        if card_data["front"] not in existing_fronts:
             card = Card(
                 track=track,
                 topic=topic_slug,
@@ -67,8 +69,10 @@ def rate_card(card_id: int) -> Response:
     if not card:
         abort(404)
 
-    data = request.get_json()
-    rating = int(data.get("rating", 3))  # 1=again, 2=hard, 3=good, 4=easy
+    data = request.get_json(silent=True)
+    if not data or "rating" not in data:
+        abort(400, description="Missing rating")
+    rating = int(data["rating"])
     if rating not in (1, 2, 3, 4):
         abort(400, description="Rating must be 1-4")
 
@@ -90,7 +94,7 @@ def rate_card(card_id: int) -> Response:
 @flashcards_bp.route("/review/<track>/complete", methods=["POST"])
 def complete_review(track: str) -> Response:
     """Record a completed review session."""
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     cards_reviewed = data.get("cards_reviewed", 0)
     duration_sec = data.get("duration_sec", 0)
     duration_min = max(1, int(duration_sec / 60))
