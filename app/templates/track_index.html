@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ track | title }} — Self Edu{% endblock %}
+
+{% block content %}
+<div class="track-page">
+    <h1>{{ track | title }}</h1>
+
+    <div class="topic-list">
+        {% for topic in topics %}
+        <a href="{{ url_for('lessons.view_lesson', track=track, topic_slug=topic.slug) }}" class="topic-item {% if topic.completed %}completed{% endif %}">
+            <span class="topic-status">{% if topic.completed %}✓{% else %}{{ topic.order }}{% endif %}</span>
+            <span class="topic-name">{{ topic.name }}</span>
+        </a>
+        {% endfor %}
+    </div>
+
+    {% if topics %}
+    <div class="track-actions">
+        <a href="{{ url_for('flashcards.review', track=track) }}" class="btn btn-secondary">Review Flashcards</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

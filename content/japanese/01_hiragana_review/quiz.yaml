@@ -1,0 +1,18 @@
+questions:
+  - type: multiple_choice
+    question: "Which hiragana is read as 'shi' (not 'si')?"
+    choices: ["さ", "し", "す", "せ"]
+    answer: 1
+    explanation: "し is read as 'shi' — this is one of the exceptions in the s-row."
+
+  - type: multiple_choice
+    question: "How is は read when used as a particle?"
+    choices: ["ha", "wa", "ba", "pa"]
+    answer: 1
+    explanation: "The particle は is always pronounced 'wa', even though the character is normally 'ha'."
+
+  - type: multiple_choice
+    question: "Which pair of hiragana looks similar and is commonly confused?"
+    choices: ["あ and お", "ね and れ", "か and に", "た and な"]
+    answer: 1
+    explanation: "ね (ne) and れ (re) look very similar — pay attention to the bottom curve."

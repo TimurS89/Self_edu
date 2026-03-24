@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}No Cards Due — Self Edu{% endblock %}
+
+{% block content %}
+<div class="completion">
+    <div class="completion-icon">✨</div>
+    <h2>No cards due!</h2>
+    <p>All caught up for {{ track | title }}. Come back later or continue with lessons.</p>
+    <div class="completion-actions">
+        <a href="{{ url_for('lessons.track_index', track=track) }}" class="btn btn-primary">Go to Lessons</a>
+        <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary">Dashboard</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+questions:
+  - type: multiple_choice
+    question: "What does a decorator do?"
+    choices:
+      - "Takes a function and returns a modified version of it"
+      - "Creates a new class from an existing class"
+      - "Converts a function to a generator"
+      - "Adds type hints to a function"
+    answer: 0
+    explanation: "A decorator takes a function as input and returns a new function that usually extends or modifies the original's behavior."
+
+  - type: multiple_choice
+    question: "What happens if you don't use @wraps in your decorator?"
+    choices:
+      - "The decorated function loses its original __name__ and __doc__"
+      - "The decorator won't work"
+      - "Python raises a SyntaxError"
+      - "Nothing — @wraps is optional and has no effect"
+    answer: 0
+    explanation: "Without @wraps, the wrapper function's metadata replaces the original, which can cause confusion in debugging and documentation."

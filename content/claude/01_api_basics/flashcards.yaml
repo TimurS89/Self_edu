@@ -1,0 +1,24 @@
+cards:
+  - front: "What Python package do you install to use the Claude API?"
+    back: "anthropic — install with: pip install anthropic"
+    tags: [claude, api, setup]
+
+  - front: "What is the main method for sending messages to Claude via the API?"
+    back: "client.messages.create() — requires model, max_tokens, and messages parameters"
+    tags: [claude, api]
+
+  - front: "What are the two message roles in the Claude API?"
+    back: "'user' (your input) and 'assistant' (Claude's response, can also be provided for few-shot examples)"
+    tags: [claude, api, messages]
+
+  - front: "How do you set a system prompt in the Claude API?"
+    back: "Pass system='Your instructions here' as a parameter to messages.create()"
+    tags: [claude, api, prompts]
+
+  - front: "How do you access the text of Claude's response?"
+    back: "message.content[0].text — content is a list of content blocks"
+    tags: [claude, api, response]
+
+  - front: "What does message.usage tell you?"
+    back: "Token counts for the request — input_tokens and output_tokens, useful for cost tracking"
+    tags: [claude, api, tokens]

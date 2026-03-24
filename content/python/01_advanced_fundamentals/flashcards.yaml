@@ -1,0 +1,20 @@
+cards:
+  - front: "What is a Python decorator?"
+    back: "A function that takes another function as an argument and returns a new function, modifying or extending its behavior."
+    tags: [python, decorators]
+
+  - front: "What does the @decorator syntax do?"
+    back: "@decorator above a function is equivalent to: func = decorator(func)"
+    tags: [python, decorators]
+
+  - front: "Why should you use @wraps from functools in a decorator?"
+    back: "To preserve the original function's __name__, __doc__, and other metadata."
+    tags: [python, decorators, functools]
+
+  - front: "How many levels of nesting does a decorator with arguments need?"
+    back: "Three levels: outer function (takes decorator args) → decorator (takes func) → wrapper (takes *args, **kwargs)"
+    tags: [python, decorators]
+
+  - front: "Name 3 common decorators used in Python libraries."
+    back: "@app.route (Flask), @pytest.fixture (pytest), @lru_cache (functools), @dataclass (dataclasses)"
+    tags: [python, decorators, libraries]

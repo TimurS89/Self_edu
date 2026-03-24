@@ -1,0 +1,158 @@
+cards:
+  # Vowels
+  - front: "あ"
+    back: "a — like 'ah' in father"
+    tags: [hiragana, vowel]
+  - front: "い"
+    back: "i — like 'ee' in feet"
+    tags: [hiragana, vowel]
+  - front: "う"
+    back: "u — like 'oo' in food"
+    tags: [hiragana, vowel]
+  - front: "え"
+    back: "e — like 'e' in get"
+    tags: [hiragana, vowel]
+  - front: "お"
+    back: "o — like 'o' in go"
+    tags: [hiragana, vowel]
+
+  # K-row
+  - front: "か"
+    back: "ka"
+    tags: [hiragana, k-row]
+  - front: "き"
+    back: "ki"
+    tags: [hiragana, k-row]
+  - front: "く"
+    back: "ku"
+    tags: [hiragana, k-row]
+  - front: "け"
+    back: "ke"
+    tags: [hiragana, k-row]
+  - front: "こ"
+    back: "ko"
+    tags: [hiragana, k-row]
+
+  # S-row
+  - front: "さ"
+    back: "sa"
+    tags: [hiragana, s-row]
+  - front: "し"
+    back: "shi (NOT si)"
+    tags: [hiragana, s-row, exception]
+  - front: "す"
+    back: "su"
+    tags: [hiragana, s-row]
+  - front: "せ"
+    back: "se"
+    tags: [hiragana, s-row]
+  - front: "そ"
+    back: "so"
+    tags: [hiragana, s-row]
+
+  # T-row
+  - front: "た"
+    back: "ta"
+    tags: [hiragana, t-row]
+  - front: "ち"
+    back: "chi (NOT ti)"
+    tags: [hiragana, t-row, exception]
+  - front: "つ"
+    back: "tsu (NOT tu)"
+    tags: [hiragana, t-row, exception]
+  - front: "て"
+    back: "te"
+    tags: [hiragana, t-row]
+  - front: "と"
+    back: "to"
+    tags: [hiragana, t-row]
+
+  # N-row
+  - front: "な"
+    back: "na"
+    tags: [hiragana, n-row]
+  - front: "に"
+    back: "ni"
+    tags: [hiragana, n-row]
+  - front: "ぬ"
+    back: "nu"
+    tags: [hiragana, n-row]
+  - front: "ね"
+    back: "ne"
+    tags: [hiragana, n-row]
+  - front: "の"
+    back: "no"
+    tags: [hiragana, n-row]
+
+  # H-row
+  - front: "は"
+    back: "ha (as particle: wa)"
+    tags: [hiragana, h-row]
+  - front: "ひ"
+    back: "hi"
+    tags: [hiragana, h-row]
+  - front: "ふ"
+    back: "fu (between fu and hu)"
+    tags: [hiragana, h-row]
+  - front: "へ"
+    back: "he (as particle: e)"
+    tags: [hiragana, h-row]
+  - front: "ほ"
+    back: "ho"
+    tags: [hiragana, h-row]
+
+  # M-row
+  - front: "ま"
+    back: "ma"
+    tags: [hiragana, m-row]
+  - front: "み"
+    back: "mi"
+    tags: [hiragana, m-row]
+  - front: "む"
+    back: "mu"
+    tags: [hiragana, m-row]
+  - front: "め"
+    back: "me"
+    tags: [hiragana, m-row]
+  - front: "も"
+    back: "mo"
+    tags: [hiragana, m-row]
+
+  # Y-row
+  - front: "や"
+    back: "ya"
+    tags: [hiragana, y-row]
+  - front: "ゆ"
+    back: "yu"
+    tags: [hiragana, y-row]
+  - front: "よ"
+    back: "yo"
+    tags: [hiragana, y-row]
+
+  # R-row
+  - front: "ら"
+    back: "ra (tongue tap, between r and l)"
+    tags: [hiragana, r-row]
+  - front: "り"
+    back: "ri"
+    tags: [hiragana, r-row]
+  - front: "る"
+    back: "ru"
+    tags: [hiragana, r-row]
+  - front: "れ"
+    back: "re"
+    tags: [hiragana, r-row]
+  - front: "ろ"
+    back: "ro"
+    tags: [hiragana, r-row]
+
+  # W-row and N
+  - front: "わ"
+    back: "wa"
+    tags: [hiragana, w-row]
+  - front: "を"
+    back: "wo (particle, pronounced 'o')"
+    tags: [hiragana, w-row, particle]
+  - front: "ん"
+    back: "n (only consonant-only character)"
+    tags: [hiragana, special]
