@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Self Edu{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <!-- Streak -->
+    <div class="streak-card">
+        <div class="streak-number">{{ streak }}</div>
+        <div class="streak-label">day streak</div>
+    </div>
+
+    <!-- Today's recommendation -->
+    {% if recommendation.track %}
+    <div class="rec-card">
+        <h2>Today's Focus</h2>
+        <p class="rec-track">{{ recommendation.track | title }}</p>
+        <p class="rec-reason">{{ recommendation.reason }}</p>
+        {% if due_cards.get(recommendation.track, 0) > 0 %}
+        <a href="{{ url_for('flashcards.review', track=recommendation.track) }}" class="btn btn-primary">
+            Start Review ({{ due_cards[recommendation.track] }} cards)
+        </a>
+        {% else %}
+        <a href="{{ url_for('lessons.track_index', track=recommendation.track) }}" class="btn btn-primary">
+            Continue Learning
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Cards due summary -->
+    {% if total_due > 0 %}
+    <div class="due-summary">
+        <h3>{{ total_due }} cards due today</h3>
+        <div class="due-tracks">
+            {% for track, count in due_cards.items() %}
+            {% if count > 0 %}
+            <a href="{{ url_for('flashcards.review', track=track) }}" class="due-track">
+                <span class="due-track-name">{{ track | title }}</span>
+                <span class="due-track-count">{{ count }}</span>
+            </a>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Track progress -->
+    <h3 class="section-title">Tracks</h3>
+    <div class="tracks-grid">
+        {% for track in tracks %}
+        <a href="{{ url_for('lessons.track_index', track=track) }}" class="track-card">
+            <div class="track-name">
+                {% if track == 'python' %}🐍{% elif track == 'claude' %}🤖{% elif track == 'japanese' %}🇯🇵{% endif %}
+                {{ track | title }}
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ progress[track].percent }}%"></div>
+            </div>
+            <div class="track-stats">
+                {{ progress[track].completed }}/{{ progress[track].total }} lessons
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

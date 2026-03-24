@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Lesson Complete — Self Edu{% endblock %}
+
+{% block content %}
+<div class="completion">
+    <div class="completion-icon">✓</div>
+    <h2>Lesson Complete!</h2>
+
+    <div class="completion-actions">
+        {% if next_topic %}
+        <a href="{{ url_for('lessons.view_lesson', track=track, topic_slug=next_topic.slug) }}" class="btn btn-primary">
+            Next: {{ next_topic.name }}
+        </a>
+        {% endif %}
+        <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

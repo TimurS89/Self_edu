@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Lesson — Self Edu{% endblock %}
+
+{% block content %}
+<article class="lesson">
+    <div class="lesson-meta">
+        <a href="{{ url_for('lessons.track_index', track=track) }}">&larr; {{ track | title }}</a>
+    </div>
+
+    <div class="lesson-content">
+        {{ content | safe }}
+    </div>
+
+    <div class="lesson-actions">
+        {% if has_quiz %}
+        <a href="{{ url_for('lessons.take_quiz', track=track, topic_slug=topic_slug) }}" class="btn btn-primary btn-full">
+            Take Quiz
+        </a>
+        {% else %}
+        <form method="POST" action="{{ url_for('lessons.complete_lesson', track=track, topic_slug=topic_slug) }}">
+            <button type="submit" class="btn btn-primary btn-full">Mark Complete ✓</button>
+        </form>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}

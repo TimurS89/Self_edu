@@ -1,0 +1,20 @@
+questions:
+  - type: multiple_choice
+    question: "Which parameter is NOT required for client.messages.create()?"
+    choices:
+      - "system"
+      - "model"
+      - "max_tokens"
+      - "messages"
+    answer: 0
+    explanation: "system is optional — it sets Claude's behavior but isn't required. model, max_tokens, and messages are required."
+
+  - type: multiple_choice
+    question: "What does stop_reason='max_tokens' mean?"
+    choices:
+      - "Claude's response was cut off because it hit the token limit"
+      - "Claude finished its response naturally"
+      - "The input was too long"
+      - "An error occurred"
+    answer: 0
+    explanation: "When stop_reason is 'max_tokens', Claude was still generating but hit the limit. You may need to increase max_tokens or ask for a shorter response."

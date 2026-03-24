@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Review — Self Edu{% endblock %}
+
+{% block content %}
+<div class="review-session" id="review-session">
+    <div class="review-header">
+        <a href="{{ url_for('dashboard.index') }}">&larr;</a>
+        <span class="review-progress">
+            <span id="current-card">1</span> / <span id="total-cards">{{ cards | length }}</span>
+        </span>
+        <span class="review-track">{{ track | title }}</span>
+    </div>
+
+    <div class="card-container" id="card-container">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <div class="card-front" id="card-front"></div>
+            <div class="card-back" id="card-back" style="display:none"></div>
+        </div>
+    </div>
+
+    <div class="rating-buttons" id="rating-buttons" style="display:none">
+        <button class="rate-btn rate-again" onclick="rateCard(1)">Again</button>
+        <button class="rate-btn rate-hard" onclick="rateCard(2)">Hard</button>
+        <button class="rate-btn rate-good" onclick="rateCard(3)">Good</button>
+        <button class="rate-btn rate-easy" onclick="rateCard(4)">Easy</button>
+    </div>
+
+    <div class="tap-hint" id="tap-hint">Tap to reveal</div>
+</div>
+
+<div class="review-complete" id="review-complete" style="display:none">
+    <div class="completion-icon">🎉</div>
+    <h2>Review Complete!</h2>
+    <p id="review-summary"></p>
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-primary">Back to Dashboard</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const cards = {{ cards | tojson }};
+    const track = {{ track | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/flashcard.js') }}"></script>
+{% endblock %}
